@@ -3,6 +3,7 @@ package com.syscho.lld.urlShortener.url.service;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.syscho.lld.urlShortener.common.dao.UrlRepository;
 import com.syscho.lld.urlShortener.common.dao.entity.UrlMappingEntity;
+import com.syscho.lld.urlShortener.common.utils.PasswordUtils;
 import com.syscho.lld.urlShortener.common.utils.ShortCodeGenerator;
 import com.syscho.lld.urlShortener.url.mapper.UrlMapper;
 import com.syscho.lld.urlShortener.url.model.UrlRequest;
@@ -33,6 +34,7 @@ public class UrlService {
     public UrlResponse shortenUrl(UrlRequest request) {
         urlValidator.validateUrl(request.getOriginalUrl());
 
+
         String shortCode;
         if (StringUtils.isNoneBlank(request.getCustomAlias())) {
             shortCode = request.getCustomAlias();
@@ -47,6 +49,10 @@ public class UrlService {
         url.setOriginalUrl(request.getOriginalUrl());
         url.setShortCode(shortCode);
 
+        if (StringUtils.isNotBlank(request.getPassword())) {
+            url.setPassword(PasswordUtils.encode(request.getPassword()));
+        }
+
         if (request.getExpiryInMinutes() != null) {
             url.setExpiryTime(LocalDateTime.now().plusMinutes(request.getExpiryInMinutes()));
         }
@@ -55,29 +61,37 @@ public class UrlService {
         return urlMapper.toResponse(saved);
     }
 
-    public String getOriginalUrl(String code) {
-        UrlMappingEntity url = (UrlMappingEntity) shortUrlCache.getIfPresent(code);
+    public String getOriginalUrl(String code, String password) {
+        UrlMappingEntity existingUrl = (UrlMappingEntity) shortUrlCache.getIfPresent(code);
 
-        if (url == null) {
+        if (existingUrl == null) {
             log.info("Not in Cache Loading from Database: {}", code);
 
-            url = urlRepository.findByShortCode(code)
+            existingUrl = urlRepository.findByShortCode(code)
                     .filter(this::isNotExpired)
                     .orElseThrow(() -> new RuntimeException("URL not found or has expired"));
 
-            shortUrlCache.put(code, url);
+            shortUrlCache.put(code, existingUrl);
         }
 
-        if (!url.isActive() || isExpired(url)) {
-            shortUrlCache.invalidate(url);
+        if (!existingUrl.isActive() || isExpired(existingUrl)) {
+            shortUrlCache.invalidate(existingUrl);
             log.warn("URL with code {} is expired", code);
             throw new RuntimeException("This short URL has expired.");
         }
 
-        url.setClickCount(url.getClickCount() + 1);
-        urlRepository.save(url);
+        if (StringUtils.isNotBlank(existingUrl.getPassword())) {
+            if (StringUtils.isBlank(password) ||
+                    !PasswordUtils.checkPassword(password, existingUrl.getPassword())) {
+                throw new RuntimeException("Password required or incorrect");
+            }
+        }
 
-        return url.getOriginalUrl();
+
+        existingUrl.setClickCount(existingUrl.getClickCount() + 1);
+        urlRepository.save(existingUrl);
+
+        return existingUrl.getOriginalUrl();
     }
 
     private boolean isExpired(UrlMappingEntity url) {

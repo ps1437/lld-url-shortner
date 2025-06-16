@@ -9,4 +9,5 @@ public class UrlRequest {
     private String customAlias;
     private Long expiryInMinutes;
     private Integer length;
+    private String password;
 }
