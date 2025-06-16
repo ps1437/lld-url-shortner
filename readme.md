@@ -151,6 +151,7 @@ curl -X POST http://localhost:8080/shorten \
 * 📈 Analytics tracking
 * 🧪 Swagger UI integration for easy testing
 * 🧱 Clean architecture and SOLID principles
+* 🚦 Rate limiting per shortened URL (via Bucket4j)
 
 ---
 
