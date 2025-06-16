@@ -40,7 +40,7 @@ public class UrlService {
                 throw new IllegalArgumentException("Custom alias already exists");
             }
         } else {
-            shortCode = shortCodeGenerator.generateUniqueShortCode(5);
+            shortCode = shortCodeGenerator.generateUniqueShortCode(request.getLength());
         }
 
         UrlMappingEntity url = new UrlMappingEntity();
