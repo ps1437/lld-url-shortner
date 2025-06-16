@@ -156,6 +156,7 @@ curl -X POST http://localhost:8080/shorten \
 * 🧱 Clean architecture and SOLID principles
 * 🚦 Rate limiting per shortened URL (via Bucket4j)
 * 🔒 Password-Protected Links
+* 📦 QR Code Generation (based in isQrNeeded flag)
 
 ---
 
@@ -171,7 +172,6 @@ curl -X POST http://localhost:8080/shorten \
 
 ## 📌 Future Enhancements
 
-* QR Code generation
 * Admin dashboard
 * Redis for distributed caching
 * PostgreSQL or MongoDB integration

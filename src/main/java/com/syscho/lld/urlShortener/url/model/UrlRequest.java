@@ -10,4 +10,5 @@ public class UrlRequest {
     private Long expiryInMinutes;
     private Integer length;
     private String password;
+    private boolean isQrNeeded;
 }
