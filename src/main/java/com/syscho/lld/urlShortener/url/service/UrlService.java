@@ -7,28 +7,26 @@ import com.syscho.lld.urlShortener.url.mapper.UrlMapper;
 import com.syscho.lld.urlShortener.url.model.UrlRequest;
 import com.syscho.lld.urlShortener.url.model.UrlResponse;
 import com.syscho.lld.urlShortener.url.validator.UrlValidatorService;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class UrlService {
+
+    private static final Logger log = LoggerFactory.getLogger(UrlService.class);
 
     private final UrlRepository urlRepository;
     private final UrlValidatorService urlValidator;
     private final UrlMapper urlMapper;
     private final ShortCodeGenerator shortCodeGenerator;
 
-    public UrlService(UrlRepository urlRepository,
-                      UrlValidatorService urlValidator,
-                      UrlMapper urlMapper,
-                      ShortCodeGenerator shortCodeGenerator) {
-        this.urlRepository = urlRepository;
-        this.urlValidator = urlValidator;
-        this.urlMapper = urlMapper;
-        this.shortCodeGenerator = shortCodeGenerator;
-    }
 
     public UrlResponse shortenUrl(UrlRequest request) {
         urlValidator.validateUrl(request.getOriginalUrl());
@@ -55,7 +53,8 @@ public class UrlService {
         return urlMapper.toResponse(saved);
     }
 
-    public String getOriginalUrl(String code, String password) {
+    @Cacheable(value = "shortUrlCache", key = "#code")
+    public String getOriginalUrl(String code) {
         UrlMappingEntity url = urlRepository.findByShortCode(code)
                 .orElseThrow(() -> new RuntimeException("URL not found"));
 
