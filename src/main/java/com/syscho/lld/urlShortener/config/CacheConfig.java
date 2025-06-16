@@ -21,9 +21,16 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     @Bean
-    public CacheManager cacheManager() {
+    public CacheManager cacheManager(Cache<Object, Object> cache) {
+        CaffeineCache shortUrlCache = new CaffeineCache("shortUrlCache", cache);
+        SimpleCacheManager manager = new SimpleCacheManager();
+        manager.setCaches(List.of(shortUrlCache));
+        return manager;
+    }
 
-        final Cache<Object, Object> cache = Caffeine.newBuilder()
+    @Bean
+    public Cache<Object, Object> cache() {
+        return Caffeine.newBuilder()
                 .expireAfter(new Expiry<>() {
                     @Override
                     public long expireAfterCreate(Object key, Object value, long currentTime) {
@@ -47,10 +54,6 @@ public class CacheConfig {
                 .maximumSize(5000)
                 .build();
 
-        CaffeineCache shortUrlCache = new CaffeineCache("shortUrlCache", cache);
-        SimpleCacheManager manager = new SimpleCacheManager();
-        manager.setCaches(List.of(shortUrlCache));
-        return manager;
     }
 }
 
