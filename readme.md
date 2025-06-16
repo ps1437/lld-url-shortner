@@ -166,7 +166,6 @@ curl -X POST http://localhost:8080/shorten \
 
 ## 📌 Future Enhancements
 
-* Rate limiting per IP
 * Password-protected links
 * QR Code generation
 * Admin dashboard
