@@ -4,7 +4,7 @@ This project is a lightweight and scalable **URL shortener** application similar
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure <WIP>
 
 ```
 
@@ -71,9 +71,10 @@ src/main/java/com/syscho/lld/urlShortener
   {
     "originalUrl": "https://example.com",
     "customAlias": "myAlias",
-    "expiryTime": "2025-06-20T12:00:00"
+    "expiryInMinutes": "2025-06-20T12:00:00",
+    "length":1,
+    "password":"password"
   }
-
 
 ### 🔹 `UrlResponse`
 
@@ -83,7 +84,9 @@ src/main/java/com/syscho/lld/urlShortener
   {
     "shortUrl": "http://localhost:8080/myAlias",
     "originalUrl": "https://example.com",
-    "expiryTime": "2025-06-20T12:00:00"
+    "expiryTime": "2025-06-20T12:00:00",
+    "clickCount": 0,
+    "active": true
   }
   ```
 
