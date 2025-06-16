@@ -33,11 +33,18 @@ src/main/java/com/syscho/lld/urlShortener
 
 ## 🧩 Core Class Responsibilities
 
-### 🔹 `xxxController`
+### 🔹 `UrlController`
 - REST controller to handle:
   - POST `/shorten` — shorten a URL
-  - GET `/{code}` — redirect to the original URL
+
+### 🔹 `RedirectController `
+- REST controller to handle:
+  - GET `/{shortCode}` — redirect to the original URL
+
+### 🔹 `UrlController`
+- REST controller to handle:
   - GET `/analytics/{code}` — get hit count and metadata
+  - GET `/admin/stats` - get admin stats
 
 ### 🔹 `UrlService`
 - Core business logic:
