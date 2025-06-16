@@ -24,7 +24,8 @@ src/main/java/com/syscho/lld/urlShortener
 │   ├── model           → DTOs (Request and Response classes)
 │   ├── service         → Core business logic
 │   ├── validator       → Validation logic
-│   └── RedirectController → REST controller handling URL shorten and redirect
+│   └── RedirectController → REST controller handling URL redirect
+|   └── UrlController → REST controller handling URL Shorten
 
 ````
 
