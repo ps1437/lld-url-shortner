@@ -152,6 +152,7 @@ curl -X POST http://localhost:8080/shorten \
 * 🧪 Swagger UI integration for easy testing
 * 🧱 Clean architecture and SOLID principles
 * 🚦 Rate limiting per shortened URL (via Bucket4j)
+* 🔒 Password-Protected Links
 
 ---
 
@@ -167,7 +168,6 @@ curl -X POST http://localhost:8080/shorten \
 
 ## 📌 Future Enhancements
 
-* Password-protected links
 * QR Code generation
 * Admin dashboard
 * Redis for distributed caching

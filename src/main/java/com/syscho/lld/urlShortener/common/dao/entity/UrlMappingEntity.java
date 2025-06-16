@@ -23,6 +23,8 @@ public class UrlMappingEntity {
     @Column(unique = true, nullable = false)
     private String shortCode;
 
+    private String password;
+
     private long clickCount = 0;
     private boolean active = true;
     private LocalDateTime createdAt = LocalDateTime.now();
