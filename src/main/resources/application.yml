@@ -10,7 +10,14 @@ spring:
     username: sa
     password:
 
+  cache:
+    cache-names: shortUrlCache
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=10m
+
 
 logging:
   level:
     org.springdoc: TRACE
+
+
