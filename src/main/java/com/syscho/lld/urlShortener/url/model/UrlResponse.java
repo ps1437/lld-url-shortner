@@ -11,5 +11,6 @@ public class UrlResponse {
     private long clickCount;
     private boolean active;
     private LocalDateTime expiryTime;
+    private String qrCodeImage;
 
 }

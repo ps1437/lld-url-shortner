@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.syscho.lld.urlShortener.common.dao.UrlRepository;
 import com.syscho.lld.urlShortener.common.dao.entity.UrlMappingEntity;
 import com.syscho.lld.urlShortener.common.utils.PasswordUtils;
+import com.syscho.lld.urlShortener.common.utils.QRCodeGenerator;
 import com.syscho.lld.urlShortener.common.utils.ShortCodeGenerator;
 import com.syscho.lld.urlShortener.url.mapper.UrlMapper;
 import com.syscho.lld.urlShortener.url.model.UrlRequest;
@@ -34,19 +35,19 @@ public class UrlService {
         urlValidator.validateUrl(request.getOriginalUrl());
 
 
-        String shortCode;
+        String shortCodeUrl;
         if (StringUtils.isNoneBlank(request.getCustomAlias())) {
-            shortCode = request.getCustomAlias();
-            if (urlRepository.existsByShortCode(shortCode)) {
+            shortCodeUrl = request.getCustomAlias();
+            if (urlRepository.existsByShortCode(shortCodeUrl)) {
                 throw new IllegalArgumentException("Custom alias already exists");
             }
         } else {
-            shortCode = shortCodeGenerator.generateUniqueShortCode(request.getLength());
+            shortCodeUrl = shortCodeGenerator.generateUniqueShortCode(request.getLength());
         }
 
         UrlMappingEntity url = new UrlMappingEntity();
         url.setOriginalUrl(request.getOriginalUrl());
-        url.setShortCode(shortCode);
+        url.setShortCode(shortCodeUrl);
 
         if (StringUtils.isNotBlank(request.getPassword())) {
             url.setPassword(PasswordUtils.encode(request.getPassword()));
@@ -56,8 +57,15 @@ public class UrlService {
             url.setExpiryTime(LocalDateTime.now().plusMinutes(request.getExpiryInMinutes()));
         }
 
+
         UrlMappingEntity saved = urlRepository.save(url);
-        return urlMapper.toResponse(saved);
+        UrlResponse response = urlMapper.toResponse(saved);
+
+        if (request.isQrNeeded()) {
+            response.setQrCodeImage(QRCodeGenerator.generateQRCodeImage(response.getShortUrl()));
+        }
+
+        return response;
     }
 
     public String getOriginalUrl(String code, String password) {
