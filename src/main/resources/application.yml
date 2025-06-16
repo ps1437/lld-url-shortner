@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: URL Shorter
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:urlshortnerDB
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+
+logging:
+  level:
+    org.springdoc: TRACE
