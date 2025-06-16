@@ -8,4 +8,5 @@ public class UrlRequest {
     private String originalUrl;
     private String customAlias;
     private Long expiryInMinutes;
+    private Integer length;
 }
